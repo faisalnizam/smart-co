@@ -1,19 +1,3 @@
-terragrunt {
-  remote_state {
-    backend  = "s3"
-    config {
-      encrypt     = true
-      bucket      = "infra-tfstate-sprii"
-      key         = "production/terraform.tfstate"
-      region      = "eu-west-1"
-      lock_table  = "prod-tfstate-sprii"
-    }
-  },
-  terraform {
-    source = "../../modules/magento_resources"
-  }
-}
-
 aws_region                = "eu-west-1"
 profile                  = "sprii" 
 env                       = "prodmock"
