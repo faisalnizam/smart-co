@@ -1,0 +1,20 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: False
+
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: caching_servers
+  become: true
+  become_user: root
+  gather_facts: true
+  vars_files:
+    - group_vars/caching/production.yaml
+
+  roles:
+    - role: geerlingguy.nginx
+    - role: geerlingguy.varnish
+...

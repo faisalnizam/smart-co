@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  connection: local
+  become: yes
+  become_user: root
+  gather_facts: true
+  vars_files:
+    - group_vars/autoscale/production.yaml
+
+  roles:
+    - role: geerlingguy.php
+    - role: geerlingguy.nginx
+      #    - role: geerlingguy.composer
+      #    - role: bennoislost.n98-magerun
+
+- hosts: localhost
+  connection: local
+  gather_facts: true
+  vars_files:
+    - group_vars/autoscale/production.yaml
+
+  roles:
+    - role: votum.magento2

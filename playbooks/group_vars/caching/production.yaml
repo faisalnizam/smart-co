@@ -1,0 +1,17 @@
+---
+varnish_default_backend_host: "127.0.0.1"
+varnish_default_backend_port: "8080"
+
+nginx_remove_default_vhost: true
+nginx_vhosts:
+  - listen: "127.0.0.1:8080 default_server"
+    server_name: "_"
+    state: "present"
+    filename: "varnish_proxy.conf"
+    access_log: '/var/log/nginx/varnish-access.log'
+    error_log: '/var/log/nginx/varnish-error.log'
+    extra_parameters: |
+        location / {
+          proxy_pass  http://magento-staging-elb-479783491.us-east-1.elb.amazonaws.com;
+          proxy_set_header Host $http_host;
+        }

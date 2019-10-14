@@ -1,0 +1,48 @@
+---
+php_webserver_daemon: "nginx"
+php_packages_extra: ['php-mysql', 'php-mcrypt', 'php-intl', 'php-zip', 'php-fpm', 'php-soap', 'php-bcmath']
+php_memory_limit: "1024M"
+
+nginx_remove_default_vhost: true
+nginx_vhosts:
+  - listen: "80 default_server"
+    server_name: "_"
+    state: "present"
+    filename: "magento.conf"
+    access_log: '/var/log/nginx/magento-access.log'
+    error_log: '/var/log/nginx/magento-error.log'
+    extra_parameters: |
+        set $MAGE_ROOT /var/www/magento;
+        include /var/www/magento/nginx.conf.sample;
+
+nginx_extra_conf_options: |
+  upstream fastcgi_backend {
+    server  unix:/run/php/php7.0-fpm.sock;
+  }
+
+bennoislost_magerun_enabled: false
+bennoislost_magerun2_enabled: true
+bennoislost_magerun2_download_url: "http://files.magerun.net/n98-magerun2-latest.phar"
+bennoislost_magerun2_bin_path: "/usr/local/bin/n98-magerun2.phar"
+
+magento_redis_cache_backend_server: "{{ lookup('env','REDIS_CACHE') }}"
+magento_redis_session_host: "{{ lookup('env','REDIS_SESSION') }}"
+
+magento2_auth_public_key: "d6d956871ec065a922c58052cf84fcaf"
+magento2_auth_private_key: "b4b40ea4c1ef752e2ed33d4873818dda"
+magento2_magerun_bin_path: "/usr/local/bin/n98-magerun2.phar"
+magento2_install_path: "/var/www/magento"
+magento2_version_to_install: "magento-ce-2.2.2"
+
+magento2_admin_firstname: "{{ lookup('env','ADMIN_FIRSTNAME') }}"
+magento2_admin_lastname: "{{ lookup('env','ADMIN_LASTNAME') }}"
+magento2_admin_email: "{{ lookup('env','ADMIN_EMAIL') }}"
+magento2_admin_user: "{{ lookup('env','ADMIN_USER') }}"
+magento2_admin_password: "{{ lookup('env','ADMIN_PASSWORD') }}"
+
+magento2_db_host: "{{ lookup('env','RDS_ENDPOINT') }}"
+magento2_db_name: "{{ lookup('env','RDS_DBNAME') }}"
+magento2_db_user: "{{ lookup('env','RDS_USERNAME') }}"
+magento2_db_password: "{{ lookup('env','RDS_PASSWORD') }}"
+
+magento2_base_url: "{{ lookup('env','BASE_URL') }}"
